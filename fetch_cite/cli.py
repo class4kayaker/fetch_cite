@@ -1,5 +1,5 @@
 import click
-import fetch_bibtex_cite.fetcher
+import fetch_cite.fetcher
 
 
 @click.command()
@@ -8,12 +8,12 @@ def get_cite(dois):
     """
     Fetch citations for DOIs in [bibtex] format
     """
-    code = fetch_bibtex_cite.fetcher.get_format_code('bibtex')
+    code = fetch_cite.fetcher.get_format_code('bibtex')
     for doi in dois:
         try:
-            cite = fetch_bibtex_cite.fetcher.cn_doi(doi, code)
+            cite = fetch_cite.fetcher.cn_doi(doi, code)
             click.echo(cite)
-        except fetch_bibtex_cite.fetcher.FormatNotSupportedError as exc:
+        except fetch_cite.fetcher.FormatNotSupportedError as exc:
             click.echo(exc.message, err=True)
 
 
