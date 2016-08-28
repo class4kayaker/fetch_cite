@@ -4,18 +4,23 @@ import fetch_cite.fetcher
 
 @click.command()
 @click.argument('dois', nargs=-1)
-def get_cite(dois):
-    """
-    Fetch citations for DOIs in [bibtex] format
-    """
-    code = fetch_cite.fetcher.get_format_code('bibtex')
+@click.option('--fmt', nargs=1, default='bibtex',
+              help='Format to provide citation information in,'
+              'defaults to bibtex')
+@click.pass_context
+def fetch(ctx, dois, fmt):
+    """Fetch citations for DOIs in FMT format"""
+    fc = fetch_cite.fetcher.FetchDOI_CN()
+    if fmt not in fc.get_supported_formats():
+        click.echo("Format [{}] not supported".format(fmt))
+        return
     for doi in dois:
         try:
-            cite = fetch_cite.fetcher.cn_doi(doi, code)
+            cite = fc.fetch(doi, fmt)
             click.echo(cite)
         except fetch_cite.fetcher.FormatNotSupportedError as exc:
             click.echo(exc.message, err=True)
 
 
 if(__name__ == "__main__"):
-    get_cite()
+    fetch()

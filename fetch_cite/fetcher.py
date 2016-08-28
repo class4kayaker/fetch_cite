@@ -1,39 +1,53 @@
 import requests
 
-_format_codes = {
-    'bibtex': 'application/x-bibtex'
-}
-
 
 class FormatNotSupportedError(Exception):
     pass
 
 
-def get_format_code(name):
-    return _format_codes[name]
-
-
-def cn_doi(doi, fmt_code):
+class FetchDOI_CN:
     """
-    Return citation in given format if content negotiation is supported for
-    said format.
+    Class to handle getting citation data by DOI content negotiation
     """
-    url = "http://dx.doi.org/"+doi
-    headers = {"Accept": fmt_code}
-    r = requests.get(url, headers=headers)
+    _format_codes = {
+        'bibtex': 'application/x-bibtex',
+        'citeproc': 'application/vnd.citationstyles.csl+json'
+    }
 
-    if not r.status_code == requests.codes.ok:
-        raise FormatNotSupportedError(
-            "Format [{}] not available for doi {} by content "
-            "negotiation".format(fmt_code, doi)
-        )
+    def get_supported_formats(self):
+        """
+        Return list of supported formats
+        """
+        return self._format_codes.keys()
 
-    if not r.headers['content-type'] == fmt_code:
-        raise FormatNotSupportedError(
-            "Format [{}] not available for doi {} by content "
-            "negotiation, got {}".format(fmt_code,
-                                         doi,
-                                         r.headers['content-type'])
-        )
+    def fetch(self, doi, fmt):
+        """
+        Return citation in given format if content negotiation with said format
+        is supported.
+        """
+        try:
+            fmt_code = self._format_codes[fmt]
+        except KeyError:
+            raise FormatNotSupportedError(
+                "Code for specifying format [{}] not known, could not complete"
+                "request.".format(fmt)
+            )
+        url = "http://dx.doi.org/"+doi
+        headers = {"Accept": fmt_code}
+        r = requests.get(url, headers=headers)
 
-    return r.text
+        if not r.status_code == requests.codes.ok:
+            raise FormatNotSupportedError(
+                "Format [{}] not available for doi {} by content "
+                "negotiation".format(fmt_code, doi)
+            )
+
+        if not r.headers['content-type'] == fmt_code:
+            raise FormatNotSupportedError(
+                "Format [{}] not available for doi {} by content "
+                "negotiation, got {}".format(fmt_code,
+                                             doi,
+                                             r.headers['content-type'])
+            )
+
+        return r.text

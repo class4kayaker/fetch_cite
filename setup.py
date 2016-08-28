@@ -18,7 +18,7 @@ setup(
     install_requires=dependencies,
     entry_points={
         'console_scripts': [
-            'fetch_cite = fetch_cite.cli:get_cite'
+            'fetch_cite = fetch_cite.cli:fetch'
         ]
     }
 )
