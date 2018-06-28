@@ -19,7 +19,7 @@ def fetch(ctx, dois, fmt):
             cite = fc.fetch(doi, fmt)
             click.echo(cite)
         except fetch_cite.fetcher.FormatNotSupportedError as exc:
-            click.echo(exc.message, err=True)
+            click.echo(str(exc), err=True)
 
 
 if(__name__ == "__main__"):
