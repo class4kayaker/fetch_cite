@@ -3,10 +3,13 @@ import fetch_cite.fetcher
 
 
 @click.command()
-@click.argument('dois', nargs=-1)
-@click.option('--fmt', nargs=1, default='bibtex',
-              help='Format to provide citation information in,'
-              'defaults to bibtex')
+@click.argument("dois", nargs=-1)
+@click.option(
+    "--fmt",
+    nargs=1,
+    default="bibtex",
+    help="Format to provide citation information in," "defaults to bibtex",
+)
 @click.pass_context
 def fetch(ctx, dois, fmt):
     """Fetch citations for DOIs in FMT format"""
@@ -22,5 +25,5 @@ def fetch(ctx, dois, fmt):
             click.echo(str(exc), err=True)
 
 
-if(__name__ == "__main__"):
+if __name__ == "__main__":
     fetch()

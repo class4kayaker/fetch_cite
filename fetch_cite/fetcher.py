@@ -9,9 +9,10 @@ class FetchDOI_CN:
     """
     Class to handle getting citation data by DOI content negotiation
     """
+
     _format_codes = {
-        'bibtex': 'application/x-bibtex',
-        'citeproc': 'application/vnd.citationstyles.csl+json'
+        "bibtex": "application/x-bibtex",
+        "citeproc": "application/vnd.citationstyles.csl+json",
     }
 
     def get_supported_formats(self):
@@ -32,7 +33,7 @@ class FetchDOI_CN:
                 "Code for specifying format [{}] not known, could not complete"
                 "request.".format(fmt)
             )
-        url = "http://dx.doi.org/"+doi
+        url = "http://dx.doi.org/" + doi
         headers = {"Accept": fmt_code}
         r = requests.get(url, headers=headers)
 
@@ -42,12 +43,10 @@ class FetchDOI_CN:
                 "negotiation".format(fmt_code, doi)
             )
 
-        if not r.headers['content-type'] == fmt_code:
+        if not r.headers["content-type"] == fmt_code:
             raise FormatNotSupportedError(
                 "Format [{}] not available for doi {} by content "
-                "negotiation, got {}".format(fmt_code,
-                                             doi,
-                                             r.headers['content-type'])
+                "negotiation, got {}".format(fmt_code, doi, r.headers["content-type"])
             )
 
         return r.text
